@@ -1,0 +1,2 @@
+# ECB-Bond-Purchases
+Every year since 1947, representatives of UN member states gather at the annual sessions of the United Nations General Assembly. The centrepiece of each session is the General Debate. This is a forum at which leaders and other senior officials deliver statements that present their government’s perspective on the major issues in world politics. For the class of Modern Data Analytics we will analyze if the European Central bank supported the green economy when purchasing corporate bonds.
