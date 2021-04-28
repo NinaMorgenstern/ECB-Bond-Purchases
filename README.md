@@ -1,2 +1,6 @@
 # ECB-Bond-Purchases
-Every year since 1947, representatives of UN member states gather at the annual sessions of the United Nations General Assembly. The centrepiece of each session is the General Debate. This is a forum at which leaders and other senior officials deliver statements that present their government’s perspective on the major issues in world politics. For the class of Modern Data Analytics we will analyze if the European Central bank supported the green economy when purchasing corporate bonds.
+The European Central Bank has been buying corporate bonds since 2015. This signifies an
+important cash injection in the European Economy. The ECB started buying assets from
+commercial banks as part of its non-standard monetary policy measures. These asset purchases, also
+known as quantitative easing or QE, support economic growth across the euro area and helps
+Europe to return to inflation levels below, but close to, 2%.
