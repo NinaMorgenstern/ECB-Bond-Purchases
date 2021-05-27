@@ -7,43 +7,35 @@ from time import sleep
 # Documentation on APIs:
 # https://developers.refinitiv.com/content/dam/devportal/api-families/open-permid/permid-entity-search/documentation/permid-apis-user-guide-apr-2020.pdf
 
-def record_matching(token,template,url='https://api-eit.refinitiv.com/permid/match',content='text/plain',data='Organization'):
+def record_matching(token,url,template,content='text/plain',data='Organization'):
     """
     This function implements PermID Record Matching API requests.
     """
-    parameters = {'x-ag-access-token' : token,
-                  'Content-Type' : content,
-                  'x-openmatch-dataType' : data} 
-    matched = False
-    Ntries = 0
-    while not matched and Ntries < 3:
-        Ntries += 1
-        sleep(2)
-        r = requests.post(url, headers = parameters, data = template).json()
-        if r['errorCodeMessage'] == 'Success':
-            if r['numReceivedRecords'] != r['unMatched']:
-                matched = True
-                print('Processed: ' + str(r['numProcessedRecords']) +
-                      '\nMatched: \n  Total ' + str(r['matched']['total']) +
-                      '\n  Excellent ' + str(r['matched']['excellent']) +
-                      '\n  Good ' + str(r['matched']['good']) +
-                      '\n  Possible ' + str(r['matched']['possible']) +
-                      '\nUnmatched: ' + str(r['unMatched']))
-            elif Ntries < 3:
-                print('No matches found. Trying again...')
-            else:
-                print('No matches found. Check the template or run the cell again.')
-    return r
+    headers = {'x-ag-access-token' : token,
+               'Content-Type' : content,
+               'x-openmatch-dataType' : data}
+    with requests.post(url, headers = headers, data = template) as request:
+        r = request.json()
+        print('Processed: ' + str(r['numProcessedRecords']) +
+              '\nMatched: \n  Total ' + str(r['matched']['total']) +
+              '\n  Excellent ' + str(r['matched']['excellent']) +
+              '\n  Good ' + str(r['matched']['good']) +
+              '\n  Possible ' + str(r['matched']['possible']) +
+              '\nUnmatched: ' + str(r['unMatched']))
+        r = pd.DataFrame([d for d in r['outputContentResponse']])[['Match OpenPermID','Input_Name']]
+        return r
     
-def entity_search(token,q,url='https://api-eit.refinitiv.com/permid/search',entity='organization'):
+def entity_search(token,url,q,entity='organization',num=5):
     """
     This function implements PermID Entity Search API requests.
     """
     parameters = {'access-token': token,
                   'entitytype': entity,
-                  'q' : q}
-    r = requests.get(url, params = parameters).json()
-    return r
+                  'num': num,
+                  'q': q}
+    with requests.get(url, params = parameters) as request:
+        r = request.json()['result']['organizations']['entities']
+        return r
     
 def entity_lookup(token,url,resp='json-ld'):
     """
@@ -51,6 +43,7 @@ def entity_lookup(token,url,resp='json-ld'):
     """
     parameters =  {'access-token': token,
                    'format' : resp}
-    r = requests.get(url, params = parameters).json()
-    return r
+    with requests.get(url, params = parameters) as request:
+        r = request.json()
+        return r
 

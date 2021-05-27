@@ -3,6 +3,17 @@ import boto3
 import io
 from io import StringIO
 
+# Function to load one file
+
+def read_csv(bucket, key):
+    client = boto3.client('s3')
+    # Create the S3 object
+    obj = client.get_object(Bucket=bucket, Key=key)  
+    # Read data from the S3 object
+    df = pd.read_csv(obj['Body'])
+    return df
+
+
 # Function to load all files with the same name pattern
 
 def read_multiple_csv(bucket, prefix, encoding):
@@ -22,11 +33,14 @@ def read_multiple_csv(bucket, prefix, encoding):
 
 # Function to put pandas dataframe to csv file on S3 bucket
 
-def df_to_csv(df, bucket, filename):
+def df_to_csv(df, bucket, filename, public_access = True):
     """
     This function puts a pandas dataframe into .csv file on the S3 bucket. 
     """
     csv_buffer = StringIO()
     df.to_csv(csv_buffer)
     s3_resource = boto3.resource('s3')
-    s3_resource.Object(bucket, filename).put(Body=csv_buffer.getvalue())
+    if public_access:
+        s3_resource.Object(bucket, filename).put(Body=csv_buffer.getvalue(), ACL='public-read')
+    else:
+        s3_resource.Object(bucket, filename).put(Body=csv_buffer.getvalue())
