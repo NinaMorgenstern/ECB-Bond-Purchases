@@ -56,7 +56,7 @@ def entity_search(token,url,q,entity='organization',num=5):
                   'q': q}
     r = ''
     Ntries = 0
-    while r == '' and Ntries < 3:
+    while r == '' and Ntries < 10:
         Ntries += 1
         try:
             sleep(2)
@@ -77,7 +77,7 @@ def entity_lookup(token,url,resp='json-ld'):
                    'format' : resp}
     r = ''
     Ntries = 0
-    while r == '' and Ntries < 10:
+    while r == '' and Ntries < 3:
         Ntries += 1
         try:
             with requests.get(url, params = parameters) as request:
